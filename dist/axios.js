@@ -1,4 +1,3 @@
-/* axios v0.19.0 | (c) 2019 by Matt Zabriskie */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
@@ -1504,13 +1503,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	  config2 = config2 || {};
 	  var config = {};
 	
-	  utils.forEach(['url', 'method', 'params', 'data'], function valueFromConfig2(prop) {
+	  var valueFromConfig2Keys = ['url', 'method', 'params', 'data'];
+	  var mergeDeepPropertiesKeys = ['headers', 'auth', 'proxy'];
+	  var defaultToConfig2Keys = [
+	    'baseURL', 'transformRequest', 'transformResponse', 'paramsSerializer',
+	    'timeout', 'withCredentials', 'adapter', 'responseType', 'xsrfCookieName',
+	    'xsrfHeaderName', 'onUploadProgress', 'onDownloadProgress',
+	    'maxContentLength', 'validateStatus', 'maxRedirects', 'httpAgent',
+	    'httpsAgent', 'cancelToken', 'socketPath'
+	  ];
+	
+	  utils.forEach(valueFromConfig2Keys, function valueFromConfig2(prop) {
 	    if (typeof config2[prop] !== 'undefined') {
 	      config[prop] = config2[prop];
 	    }
 	  });
 	
-	  utils.forEach(['headers', 'auth', 'proxy'], function mergeDeepProperties(prop) {
+	  utils.forEach(mergeDeepPropertiesKeys, function mergeDeepProperties(prop) {
 	    if (utils.isObject(config2[prop])) {
 	      config[prop] = utils.deepMerge(config1[prop], config2[prop]);
 	    } else if (typeof config2[prop] !== 'undefined') {
@@ -1522,13 +1531,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  });
 	
-	  utils.forEach([
-	    'baseURL', 'transformRequest', 'transformResponse', 'paramsSerializer',
-	    'timeout', 'withCredentials', 'adapter', 'responseType', 'xsrfCookieName',
-	    'xsrfHeaderName', 'onUploadProgress', 'onDownloadProgress', 'maxContentLength',
-	    'validateStatus', 'maxRedirects', 'httpAgent', 'httpsAgent', 'cancelToken',
-	    'socketPath'
-	  ], function defaultToConfig2(prop) {
+	  utils.forEach(defaultToConfig2Keys, function defaultToConfig2(prop) {
+	    if (typeof config2[prop] !== 'undefined') {
+	      config[prop] = config2[prop];
+	    } else if (typeof config1[prop] !== 'undefined') {
+	      config[prop] = config1[prop];
+	    }
+	  });
+	
+	  var axiosKeys = valueFromConfig2Keys
+	    .concat(mergeDeepPropertiesKeys)
+	    .concat(defaultToConfig2Keys);
+	
+	  var otherKeys = Object
+	    .keys(config2)
+	    .filter(function filterAxiosKeys(key) {
+	      return axiosKeys.indexOf(key) === -1;
+	    });
+	
+	  utils.forEach(otherKeys, function otherKeysDefaultToConfig2(prop) {
 	    if (typeof config2[prop] !== 'undefined') {
 	      config[prop] = config2[prop];
 	    } else if (typeof config1[prop] !== 'undefined') {

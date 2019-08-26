@@ -10,6 +10,8 @@
 
 Promise based HTTP client for the browser and node.js
 
+> **WARNING**: This is a custom implementation of axios that allows custom properties in network requests. We need that to make `axios-retry` great again.
+
 ## Features
 
 - Make [XMLHttpRequests](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) from the browser
